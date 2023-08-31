@@ -17,17 +17,13 @@ function action(routine)
 
     if routine == "Cull" then
         print("Culling.")
-        local success, data = turtle.inspectDown()
-        if success and data.name == "minecraft:pig" then
-            turtle.attack()
-        end
+        turtle.attackDown()
 
         -- Before we do anything else, check if we have enough meat
         if turtle.getItemCount(1) >= MEAT_COUNT then
             print("Cull successful.")
             return "Return"
         else
-            print("No pigs.")
             return "Cull"
         end
     else
@@ -48,12 +44,12 @@ function reset(routine)
             return "Return"
         end
     else
+        print("Searching.")
         return routine
     end
 end
 -- Move the turtle based on its mode
 function move()
-    print("Searching.")
     local success, data = turtle.inspect()
     if success then
         turtle.turnLeft()
