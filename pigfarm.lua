@@ -1,5 +1,5 @@
 -- Constants for fuel
-local MEAT_COUNT = 3
+local MAX_MEAT_COUNT = 3
 
 -- Deposit all items except seeds and fuel
 function depositItems()
@@ -20,7 +20,13 @@ function action(routine)
         turtle.attackDown()
 
         -- Before we do anything else, check if we have enough meat
-        if turtle.getItemCount(1) >= MEAT_COUNT then
+
+        local meat_count = 0;
+        for i = 1,16 do
+            meat_count = meat_count + turtle.getItemCount(i)
+        end
+
+        if meat_count >= MAX_MEAT_COUNT then
             print("Cull successful.")
             return "Return"
         else
