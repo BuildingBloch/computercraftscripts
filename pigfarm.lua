@@ -13,9 +13,10 @@ function depositItems()
 end
 
 -- Inspect and take action based on the block below the turtle
-function inspect(routine)
+function action(routine)
 
     if routine == "Cull" then
+        print("Culling.")
         local success, data = turtle.inspectDown()
         if success and data.name == "minecraft:pig" then
             turtle.attack()
@@ -25,9 +26,15 @@ function inspect(routine)
         if turtle.getItemCount(1) >= MEAT_COUNT then
             print("Cull successful.")
             return "Return"
+        else
+            print("No pigs.")
+            return "Cull"
         end
+    else
+        return routine
     end
 end
+
 function reset(routine)
     if routine == "Return" then
         local success, data = turtle.inspect()
@@ -46,9 +53,8 @@ function reset(routine)
 end
 -- Move the turtle based on its mode
 function move()
-
+    print("Searching.")
     local success, data = turtle.inspect()
-    
     if success then
         turtle.turnLeft()
         success, data = turtle.inspect()
@@ -76,7 +82,7 @@ function main()
 
         while routine == "Cull" do
             move()
-            routine = inspect(routine)
+            routine = action(routine)
         end
 
         while routine == "Return" do
