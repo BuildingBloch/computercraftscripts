@@ -28,7 +28,9 @@ function action(routine)
         end
 
         if meat_count >= MAX_MEAT_COUNT then
-            print("Cull successful.")
+            local update = "Command complete: Cull."
+            rednet.send(MASTER_SERVER, update)
+            print(update)
             return "Return"
         else
             return "Cull"
@@ -38,9 +40,6 @@ function action(routine)
         carrot_count = turtle.getItemCount(1)
 
         -- If starting with 0 carrots, grab carrots from chest
-        local response = "Command 'Nourish' acknowledged."
-        rednet.send(MASTER_SERVER, response)
-        
         if carrot_count == 0 then
             turtle.turnRight()
             local success, data = turtle.inspect()
@@ -59,9 +58,9 @@ function action(routine)
         carrot_count = turtle.getItemCount(1)
 
         if carrot_count <= 0 then
-            local response = "Command 'Nourish' complete."
-            rednet.send(MASTER_SERVER, response)
-            print(response)
+            local update = "Command complete: Nourish."
+            rednet.send(MASTER_SERVER, update)
+            print(update)
             return "Return"
         else
             return "Nourish"
@@ -77,9 +76,9 @@ function reset(routine)
         if success and data.name == "minecraft:chest" then
             depositItems()
             turtle.turnLeft()
-            local response = "Awaiting command."
-            rednet.send(MASTER_SERVER, response)
-            print(response)
+            local update = "Awaiting command."
+            rednet.send(MASTER_SERVER, update)
+            print(update)
             return "End"
         else
             return "Return"
@@ -114,6 +113,9 @@ function main()
     while true do
         local senderID, command = rednet.receive()
         print("Received message from" .. senderID .. ": " .. command)
+
+        local echo = command
+        rednet.send(MASTER_SERVER, "Command acknowledged: " .. echo)
 
         local routine = command
 
