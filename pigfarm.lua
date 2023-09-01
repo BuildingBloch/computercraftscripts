@@ -35,12 +35,12 @@ function action(routine)
         end
     elseif routine == "Nourish" then
 
-        local response = "Command 'Nourish' acknowledged."
-        rednet.send(MASTER_SERVER, response)
-
         carrot_count = turtle.getItemCount(1)
 
         -- If starting with 0 carrots, grab carrots from chest
+        local response = "Command 'Nourish' acknowledged."
+        rednet.send(MASTER_SERVER, response)
+        
         if carrot_count == 0 then
             turtle.turnRight()
             local success, data = turtle.inspect()
@@ -77,7 +77,7 @@ function reset(routine)
         if success and data.name == "minecraft:chest" then
             depositItems()
             turtle.turnLeft()
-            local response = "Awaiting Command."
+            local response = "Awaiting command."
             rednet.send(MASTER_SERVER, response)
             print(response)
             return "End"
