@@ -39,12 +39,14 @@ function action(routine)
 
         -- If starting with 0 carrots, grab carrots from chest
         if carrot_count == 0 then
-            local success, data = turtle.inspectRight()
+            turtle.turnRight()
+            local success, data = turtle.inspect()
             if success and data.name == "minecraft:chest" then
                 print("Grabbing Carrots.")
                 turtle.select(1)
                 turtle.suck(MAX_CARROT_COUNT)
             end
+            turtle.turnLeft()
         end
 
         if carrot_count == 1 then
