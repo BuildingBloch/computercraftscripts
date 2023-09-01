@@ -1,4 +1,4 @@
--- Constants for fuel
+local MASTER_SERVER = 12
 local MAX_MEAT_COUNT = 3
 local MAX_CARROT_COUNT = 10
 
@@ -35,6 +35,9 @@ function action(routine)
         end
     elseif routine == "Nourish" then
 
+        local response = "Command 'Nourish' acknowledged."
+        rednet.send(MASTER_SERVER, response)
+
         carrot_count = turtle.getItemCount(1)
 
         -- If starting with 0 carrots, grab carrots from chest
@@ -42,14 +45,13 @@ function action(routine)
             turtle.turnRight()
             local success, data = turtle.inspect()
             if success and data.name == "minecraft:chest" then
-                print("Grabbing Carrots.")
                 turtle.select(1)
                 turtle.suck(MAX_CARROT_COUNT)
             end
             turtle.turnLeft()
         end
 
-        if carrot_count == 1 then
+        if carrot_count >= 1 then
                 turtle.select(1)
                 turtle.placeDown()
         end
@@ -57,7 +59,9 @@ function action(routine)
         carrot_count = turtle.getItemCount(1)
 
         if carrot_count <= 0 then
-            print("Nourish successful.")
+            local response = "Command 'Nourish' complete."
+            rednet.send(MASTER_SERVER, response)
+            print(response)
             return "Return"
         else
             return "Nourish"
@@ -72,8 +76,10 @@ function reset(routine)
         local success, data = turtle.inspect()
         if success and data.name == "minecraft:chest" then
             depositItems()
-            print("Return successful.")
             turtle.turnLeft()
+            local response = "Awating Command."
+            rednet.send(MASTER_SERVER, response)
+            print(response)
             return "End"
         else
             return "Return"
