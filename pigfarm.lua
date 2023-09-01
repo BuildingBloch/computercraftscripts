@@ -77,7 +77,7 @@ function reset(routine)
         if success and data.name == "minecraft:chest" then
             depositItems()
             turtle.turnLeft()
-            local response = "Awating Command."
+            local response = "Awaiting Command."
             rednet.send(MASTER_SERVER, response)
             print(response)
             return "End"
