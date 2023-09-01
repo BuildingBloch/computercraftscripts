@@ -8,7 +8,7 @@ function depositItems()
         turtle.select(i)
         local itemDetail = turtle.getItemDetail()
         if itemDetail then
-            turtle.transferTo(2)
+            turtle.drop()
         end
     end
 end
@@ -41,6 +41,7 @@ function action(routine)
         if carrot_count == 0 then
             local success, data = turtle.inspectRight()
             if success and data.name == "minecraft:chest" then
+                print("Grabbing Carrots.")
                 turtle.select(1)
                 turtle.suck(MAX_CARROT_COUNT)
             end
