@@ -1,18 +1,19 @@
 -- Constants for fuel
 local MAX_MEAT_COUNT = 3
+local MAX_CARROT_COUNT = 10
 
--- Deposit all items except seeds and fuel
+-- Deposit all items
 function depositItems()
     for i = 1, 16 do
         turtle.select(i)
         local itemDetail = turtle.getItemDetail()
         if itemDetail then
-            turtle.drop()
+            turtle.transferTo(2)
         end
     end
 end
 
--- Inspect and take action based on the block below the turtle
+-- Inspect and take action based on the turtle routine
 function action(routine)
 
     if routine == "Cull" then
@@ -32,6 +33,32 @@ function action(routine)
         else
             return "Cull"
         end
+    elseif routine == "Nourish" then
+
+        carrot_count = turtle.getItemCount(1)
+
+        -- If starting with 0 carrots, grab carrots from chest
+        if carrot_count == 0 then
+            local success, data = turtle.inspectRight()
+            if success and data.name == "minecraft:chest" then
+                turtle.select(1)
+                turtle.suck(MAX_CARROT_COUNT)
+            end
+        end
+
+        if carrot_count == 1 then
+                turtle.select(1)
+                turtle.placeDown()
+        end
+        
+        carrot_count = turtle.getItemCount(1)
+
+        if carrot_count <= 0 then
+            print("Nourish successful.")
+            return "Return"
+        else
+            return "Nourish"
+        end
     else
         return routine
     end
@@ -44,7 +71,6 @@ function reset(routine)
             depositItems()
             print("Return successful.")
             turtle.turnLeft()
-            os.sleep()
             return "End"
         else
             return "Return"
@@ -77,14 +103,19 @@ function main()
     rednet.open("left")  -- Replace "side" with the side where the modem is placed.
 
     while true do
-        local senderID, message = rednet.receive()
-        print("Received message from" .. senderID .. ": " .. message)
+        local senderID, command = rednet.receive()
+        print("Received message from" .. senderID .. ": " .. command)
 
-        local routine = message
+        local routine = command
 
         while routine == "Cull" do
             move()
             routine = action(routine)
+        end
+
+        while routine == "Nourish" do
+            routine = action(routine)
+            move()
         end
 
         while routine == "Return" do
