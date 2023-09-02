@@ -17,6 +17,7 @@ function main()
             local senderID, response = rednet.receive()
 
             if response == "Need next instruction." then
+                
                 local senderID, response = rednet.receive()
                 print("Turtle " .. senderID .. ": " .. response)
                 local command = io.read()

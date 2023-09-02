@@ -112,19 +112,21 @@ function main()
 
     while true do
         local senderID, command = rednet.receive()
-        print("Received message from " .. senderID .. ": " .. command .. ".")
+        print("Command from " .. senderID .. ": " .. command .. ".")
         
         local echo = command
         os.sleep(0.5)
         rednet.send(MASTER_SERVER, "Command acknowledged: " .. echo .. ".")
 
+        local value = " "
         local number = 0
         if command == "Cull" then
             os.sleep(0.5)
             rednet.send(MASTER_SERVER, "Need next instruction.")
             os.sleep(0.5)
             rednet.send(MASTER_SERVER, "Cull number: ")
-            senderID, number = rednet.receive()
+            senderID, value = rednet.receive()
+            number = tonumber(value)
             rednet.send(MASTER_SERVER, "Beginning Cull.")
         end
 
