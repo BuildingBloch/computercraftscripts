@@ -115,10 +115,12 @@ function main()
         print("Received message from " .. senderID .. ": " .. command .. ".")
         
         local echo = command
+        os.sleep(0.5)
         rednet.send(MASTER_SERVER, "Command acknowledged: " .. echo .. ".")
 
         local number = 0
         if command == "Cull" then
+            os.sleep(0.5)
             rednet.send(MASTER_SERVER, "Need next instruction.")
             os.sleep(0.5)
             rednet.send(MASTER_SERVER, "Cull number: ")
