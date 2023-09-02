@@ -14,7 +14,7 @@ function depositItems()
 end
 
 -- Inspect and take action based on the turtle routine
-function action(routine)
+function action(routine, number)
 
     if routine == "Cull" then
         print("Culling.")
@@ -27,7 +27,7 @@ function action(routine)
             meat_count = meat_count + turtle.getItemCount(i)
         end
 
-        if meat_count >= MAX_MEAT_COUNT then
+        if meat_count >= number then
             local update = "Command complete: Cull."
             rednet.send(MASTER_SERVER, update)
             print(update)
@@ -112,16 +112,25 @@ function main()
 
     while true do
         local senderID, command = rednet.receive()
-        print("Received message from" .. senderID .. ": " .. command)
-
+        print("Received message from " .. senderID .. ": " .. command .. ".")
+        
         local echo = command
-        rednet.send(MASTER_SERVER, "Command acknowledged: " .. echo)
+        rednet.send(MASTER_SERVER, "Command acknowledged: " .. echo .. ".")
+
+        local number = 0
+        if command == "Cull" then
+            rednet.send(MASTER_SERVER, "Need next instruction.")
+            os.sleep(0.5)
+            rednet.send(MASTER_SERVER, "Cull number: ")
+            senderID, number = rednet.receive()
+            rednet.send(MASTER_SERVER, "Beginning Cull.")
+        end
 
         local routine = command
 
         while routine == "Cull" do
             move()
-            routine = action(routine)
+            routine = action(routine, number)
         end
 
         while routine == "Nourish" do
